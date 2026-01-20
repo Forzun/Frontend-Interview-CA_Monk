@@ -1,3 +1,27 @@
+# CA Monk Blog Application – Assignment Submission
+
+This repository contains my completed solution for the CA Monk Frontend
+Interview assignment.
+
+## Implemented Features
+- Fetch all blogs using TanStack Query
+- View blog details by ID
+- Create new blog with form submission
+- Query invalidation after blog creation
+- Loading and error state handling
+- Responsive UI using Tailwind CSS and shadcn/ui
+
+## Tech Stack
+- React + TypeScript
+- TanStack Query
+- Tailwind CSS
+- shadcn/ui
+- JSON Server
+
+---
+
+
+
 # CA Monk - Blog Application Assignment
 
 Welcome to the CA Monk Blog Application assignment! This project tests your ability to build a modern React application with state management, styling, and component libraries.
