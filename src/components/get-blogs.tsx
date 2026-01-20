@@ -11,6 +11,7 @@ interface BlogDetailProps {
 
 export function BlogDetail({ id }: BlogDetailProps) {
   const { data: blog, isLoading, error } = useGetBlog(id); 
+  
 
   if (isLoading) {
     return <BlogDetailSkeleton />;

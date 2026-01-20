@@ -8,6 +8,7 @@ import { useBlogs } from "../hooks/useBloks";
 import BlogCard from "../components/Blog-card";
 import { BlogDetail } from "../components/get-blogs";
 import { CreateBlogDialog } from "../components/create-blog";
+import { Skeleton } from "../components/ui/skeleton";
 
 export default function Home() { 
     const { data, isLoading, isError } = useBlogs();
@@ -15,19 +16,6 @@ export default function Home() {
     const [search , setSearch] = useState("");  
     const selectedId = match && params?.id ? Number(params?.id) : null; 
     // console.log(data)
-
-    if(isLoading){ 
-        return <div>
-            Loading...
-        </div>
-    }
-
-
-    if(isError){ 
-        return <div>
-            Something is broke
-        </div>
-    }
 
     const filteredBlogs = data?.filter((blog) => { 
         return blog.title.toLocaleLowerCase().includes(search.toLowerCase())
@@ -38,7 +26,7 @@ export default function Home() {
    
         <div className={cn(
             "w-full md:w-[400px] lg:w-[450px] shrink-0 flex flex-col bg-background border-r border-neutral-300/50 transition-all duration-300 z-20 overflow-y-auto no-scrollbar",
-            selectedId ? "hidden" : ""
+            selectedId ? "hidden md:flex" : "flex",
         )}>
             <div className="p-6 border-b border-neutral-300/50 bg-background sticky top-0 z-10">
                 <div className="flex items-center justify-between mb-6">
@@ -62,12 +50,43 @@ export default function Home() {
             </div> 
 
             <ScrollArea className="flex-1 px-4">
-                <div className="py-6 space-y-2">
-                    {filteredBlogs?.map((blog , index) => ( 
-                        <BlogCard key={index} blog={blog} />
-                    ))}
+          <div className="py-6 space-y-2">
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="p-5 border border-neutral-200 rounded-xl space-y-3 mb-4">
+                  <div className="flex gap-2">
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                    <Skeleton className="h-5 w-20 rounded-full" />
+                  </div>
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
                 </div>
-            </ScrollArea>
+              ))
+            ) : isError ? (
+              <div className="text-center p-8 text-destructive">
+                Failed to load blogs. Please try again.
+              </div>
+            ) : filteredBlogs?.length === 0 ? (
+              <div className="text-center py-12 px-4">
+                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <h3 className="font-bold text-lg mb-1">No posts found</h3>
+                <p className="text-muted-foreground text-sm">
+                  Try adjusting your search terms or create a new post.
+                </p>
+              </div>
+            ) : (
+              filteredBlogs?.map((blog) => (
+                <BlogCard key={blog.id} blog={blog} />
+              ))
+            )}
+
+            <div className="h-10" />
+          </div>
+        </ScrollArea>
+
 
             
             <div className="p-4 border-t border-neutral-200 shadow text-xs text-center text-muted-foreground bg-muted sticky bottom-0 z-10">
@@ -76,9 +95,8 @@ export default function Home() {
         </div>
 
         <div className={cn(
-            "flex-1 bg-white dark:bg-zinc-900 h-full relative overflow-auto transition-all duration-300", 
-            !selectedId ? "hidden md:block" : "block fixed inset-0 md:static md:z-0"
-         )}>
+          "flex-1 bg-white dark:bg-zinc-900 h-full relative overflow-y-scroll transition-all duration-300",
+        )}>
             {selectedId ? ( 
                 <div>
                     <BlogDetail id={selectedId} />
